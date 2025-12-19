@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Logga in – NB Nattpass</title>
+  <link rel="stylesheet" href="styles/login.css" />
+</head>
+<body class="login-page">
+
+  <form class="login-card" id="loginForm">
+    <h1>Logga in</h1>
+
+    <label>Användarnamn</label>
+    <input id="username" required />
+
+    <label>Lösenord</label>
+    <input id="password" type="password" required />
+
+    <div id="error" class="error"></div>
+
+    <button type="submit">Logga in</button>
+  </form>
+
+  <script>
+    if (localStorage.getItem("logged_in") === "true") {
+      window.location.href = "app.html";
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      if (username.value === "admin" && password.value === "1234") {
+        localStorage.setItem("logged_in", "true");
+        window.location.href = "app.html";
+      } else {
+        error.textContent = "Fel användarnamn eller lösenord";
+      }
+    });
+  </script>
+
+</body>
+</html>

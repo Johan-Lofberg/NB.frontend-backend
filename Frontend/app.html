@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>NB Nattpass – Admin</title>
+  <link rel="stylesheet" href="styles/admin.css" />
+</head>
+<body>
+
+<header>
+  <h1>NB Nattpass – Adminpanel</h1>
+  <p>Ladda upp schema, kolla pass & kör påminnelser.</p>
+  <button onclick="logout()">Logga ut</button>
+</header>
+
+<div class="container">
+
+  <section class="card">
+    <h2>Ladda upp schema-fil</h2>
+    <form id="upload-form">
+      <input type="file" id="file-input" name="file" accept=".xlsx,.xls" />
+      <button type="submit" class="btn-primary">Ladda upp</button>
+    </form>
+    <div id="upload-status" class="status"></div>
+    <pre id="upload-response"></pre>
+  </section>
+
+  <section class="card">
+    <h2>API-test</h2>
+    <button onclick="testRoot()" class="btn-secondary">Testa / (root)</button>
+    <button onclick="getShifts()" class="btn-secondary">Hämta /shifts</button>
+    <button onclick="getReminders()" class="btn-secondary">Hämta /reminders</button>
+    <button onclick="runTodaysReminders()" class="btn-secondary">Kör /run-todays-reminders</button>
+    <button onclick="getLatestLogs()" class="btn-secondary">Hämta /logs/latest</button>
+    <button onclick="getErrorLogs()" class="btn-secondary">Hämta /logs/errors</button>
+
+    <div id="api-status" class="status"></div>
+    <pre id="api-response"></pre>
+  </section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
