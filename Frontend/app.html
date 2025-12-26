@@ -2,44 +2,132 @@
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
-  <title>NB Nattpass – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Näsets Båthamn – Admin</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="styles/admin.css" />
 </head>
 <body>
 
-<header>
-  <h1>NB Nattpass – Adminpanel</h1>
-  <p>Ladda upp schema, kolla pass & kör påminnelser.</p>
-  <button onclick="logout()">Logga ut</button>
-</header>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo"></div>
+      <h1>Näsets Båthamn</h1>
+    </div>
 
-<div class="container">
+    <div class="spacer"></div>
 
-  <section class="card">
-    <h2>Ladda upp schema-fil</h2>
-    <form id="upload-form">
-      <input type="file" id="file-input" name="file" accept=".xlsx,.xls" />
-      <button type="submit" class="btn-primary">Ladda upp</button>
-    </form>
-    <div id="upload-status" class="status"></div>
-    <pre id="upload-response"></pre>
-  </section>
+    <div class="logout">
+      <button class="logout-btn" id="logout-btn">Logga ut</button>
+      <button class="logout-arrow" id="logout-arrow">→</button>
+    </div>
+  </header>
 
-  <section class="card">
-    <h2>API-test</h2>
-    <button onclick="testRoot()" class="btn-secondary">Testa / (root)</button>
-    <button onclick="getShifts()" class="btn-secondary">Hämta /shifts</button>
-    <button onclick="getReminders()" class="btn-secondary">Hämta /reminders</button>
-    <button onclick="runTodaysReminders()" class="btn-secondary">Kör /run-todays-reminders</button>
-    <button onclick="getLatestLogs()" class="btn-secondary">Hämta /logs/latest</button>
-    <button onclick="getErrorLogs()" class="btn-secondary">Hämta /logs/errors</button>
+  <!-- PAGE -->
+  <main class="page">
+    <section class="shell">
+      <div class="layout">
 
-    <div id="api-status" class="status"></div>
-    <pre id="api-response"></pre>
-  </section>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+          <ul class="sidebar-list" id="sidebar">
+            <li data-view="schedule" class="is-active">Schema</li>
+            <li data-view="upload">Ladda upp Excel</li>
+            <li data-view="logs">Loggar</li>
+          </ul>
+        </aside>
 
-</div>
+        <!-- MAIN CONTENT -->
+        <section class="content">
 
-<script src="app.js"></script>
+          <!-- ============ VIEW: SCHEDULE ============ -->
+          <section id="view-schedule">
+
+            <!-- MONTH NAV -->
+            <div class="month-bar">
+              <button class="month-nav prev" id="month-prev">‹</button>
+
+              <div class="month-select">
+                <span class="month-label" id="month-label">Januari</span>
+                <select id="month-select" aria-label="Välj månad"></select>
+              </div>
+
+              <button class="month-nav next" id="month-next">›</button>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrapper">
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th>Dag</th>
+                    <th>V1</th>
+                    <th>Tel</th>
+                    <th>14d</th>
+                    <th>1d</th>
+                  </tr>
+                </thead>
+
+                <tbody id="schedule-tbody">
+                  <!-- Renderas av JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 10px; color: #6b7a99; font-size: 13px;" id="schedule-meta"></div>
+          </section>
+
+          <!-- ============ VIEW: UPLOAD ============ -->
+          <section id="view-upload" hidden>
+
+            <h2 style="margin: 6px 0 12px;">Ladda upp Excel</h2>
+
+            <form id="upload-form" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+              <input id="file-input" type="file" accept=".xlsx,.xls" />
+              <button class="tel-btn" type="submit" style="height:44px;">Ladda upp</button>
+              <span id="upload-status" class="status" style="width:auto; padding: 0 12px;">—</span>
+            </form>
+
+            <pre id="upload-response" style="margin-top:12px; background:#fff; border:1px solid #e6ebf5; padding:12px; border-radius:14px; overflow:auto; max-height:360px;"></pre>
+
+          </section>
+
+          <!-- ============ VIEW: LOGS ============ -->
+          <section id="view-logs" hidden>
+
+            <h2 style="margin: 6px 0 12px;">Loggar</h2>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px;">
+              <button class="tel-btn" id="logs-latest" type="button">Senaste</button>
+              <button class="tel-btn" id="logs-errors" type="button">Endast fel</button>
+
+              <div style="display:flex; gap:8px; align-items:center;">
+                <label style="font-size:13px; color:#6b7a99;">Datum</label>
+                <input id="logs-date" placeholder="YYYY-MM-DD" style="height:36px; border-radius:10px; border:1px solid #e6ebf5; padding:0 10px;">
+              </div>
+
+              <div style="display:flex; gap:8px; align-items:center;">
+                <label style="font-size:13px; color:#6b7a99;">Limit</label>
+                <input id="logs-limit" type="number" min="1" max="500" value="50" style="width:90px; height:36px; border-radius:10px; border:1px solid #e6ebf5; padding:0 10px;">
+              </div>
+
+              <button class="tel-btn" id="logs-filter" type="button">Filtrera</button>
+
+              <span id="logs-status" class="status" style="width:auto; padding: 0 12px;">—</span>
+            </div>
+
+            <pre id="logs-output" style="background:#fff; border:1px solid #e6ebf5; padding:12px; border-radius:14px; overflow:auto; max-height:420px;"></pre>
+
+          </section>
+
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <!-- JS (modules) -->
+  <script type="module" src="scripts/app.js"></script>
 </body>
 </html>
